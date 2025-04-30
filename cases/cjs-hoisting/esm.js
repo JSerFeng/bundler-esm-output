@@ -1,1 +1,1 @@
-export default 42
+export const esm = 42

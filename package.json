@@ -2,17 +2,15 @@
   "name": "bundler-esm-output",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/index.js",
-
-  "exports": {
-    "./rspack": "./dist/rspack.js",
-    "./webpack": "./dist/webpack.js",
-    "./rolldown": "./dist/rolldown.js",
-    "./rollup": "./dist/rollup.js",
-    "./esbuild": "./dist/esbuild.js"
+  "main": "./build/index.js",
+  "engines": {
+    "node": "22.15.0"
   },
+  "type": "module",
   "scripts": {
-    "update-bundler": "npx npm-check-updates \"/bundler/\" -u && npm install"
+    "update-bundler": "npx npm-check-updates \"/bundler/\" -u && npm install",
+    "report": "node --experimental-require-module build/run-case.js",
+    "report-table": "TABLE=1 node --experimental-require-module build/run-case.js"
   },
   "keywords": [],
   "author": "",

@@ -2,6 +2,7 @@ import { rollup as build, defineConfig } from "rollup";
 import { REPORT_EXECUTION } from "./report-execution.js";
 import commonjs from "@rollup/plugin-commonjs";
 import path from "path";
+import fs from "fs/promises";
 
 export async function rollup(entry: string) {
   const context = path.dirname(entry);
@@ -30,9 +31,11 @@ export async function rollup(entry: string) {
   });
 
   const res = await build(config);
+  const outdir = path.resolve(import.meta.dirname, "../dist/dist-rollup");
+  await fs.unlink(outdir).catch(() => {});
   await res.write({
-    dir: path.resolve(__dirname, "./dist-rollup"),
+    dir: outdir,
   });
 
-  return "dist-rollup/main.js";
+  return path.join(outdir, "main.js");
 }

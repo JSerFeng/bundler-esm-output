@@ -1,10 +1,13 @@
 import { build } from "esbuild";
 import { REPORT_EXECUTION } from "./report-execution.js";
 import path from "path";
+import fs from "fs/promises";
 import { readFile } from "fs/promises";
 
 export async function esbuild(entry: string) {
   const context = path.dirname(entry);
+  const outdir = path.resolve(import.meta.dirname, "../dist/dist-esbuild");
+  await fs.unlink(outdir).catch(() => {});
 
   await build({
     entryPoints: [entry],
@@ -12,7 +15,7 @@ export async function esbuild(entry: string) {
     bundle: true,
     splitting: true,
     write: true,
-    outdir: path.resolve(__dirname, "dist-esbuild"),
+    outdir,
     treeShaking:
       true /**if disable treeshaking, the output can be very different */,
     plugins: [
@@ -37,5 +40,6 @@ export async function esbuild(entry: string) {
       },
     ],
   });
-  return path.resolve(__dirname, "dist-esbuild/index.js");
+
+  return path.join(outdir, "./index.js");
 }

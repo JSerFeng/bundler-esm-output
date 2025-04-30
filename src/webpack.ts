@@ -7,6 +7,7 @@ export async function webpack(entry: string): Promise<string> {
       main: entry,
     },
     mode: "production",
+    context: path.resolve(import.meta.dirname, "../dist"),
     output: {
       library: {
         type: "modern-module",
@@ -15,6 +16,8 @@ export async function webpack(entry: string): Promise<string> {
       iife: false,
       publicPath: "",
       chunkFormat: "module",
+      chunkLoading: "import",
+      clean: true,
     },
     devtool: false,
     module: {
@@ -23,7 +26,7 @@ export async function webpack(entry: string): Promise<string> {
           test: /js$/,
           use: [
             {
-              loader: path.resolve(__dirname, "./report-loader"),
+              loader: path.resolve(import.meta.dirname, "./report-loader"),
             },
           ],
         },
@@ -44,8 +47,7 @@ export async function webpack(entry: string): Promise<string> {
       if (err || stats!.hasErrors()) {
         reject(err || JSON.stringify(stats?.toJson().errors));
       } else {
-        const entry = stats?.toJson().entrypoints!["main"];
-        resolve(entry?.assets![0].name as string);
+        resolve(path.resolve(import.meta.dirname, "../dist/dist-webpack/main.js"));
       }
     });
   });

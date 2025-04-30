@@ -1,3 +1,3 @@
-import v from './cjs'
+import v from './cjs.cjs'
 
 blackBox(v)

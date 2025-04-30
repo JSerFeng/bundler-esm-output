@@ -7,6 +7,10 @@ import { webpack } from "./webpack.js";
 import { newRecord } from "./report-execution.js";
 import { rollup } from "./rollup.js";
 import { esbuild } from "./esbuild.js";
+import { node } from "./node.js";
+import { createRequire } from "module";
+
+const casesDir = path.join(import.meta.dirname, "../cases");
 
 type Bundler = {
   name: string;
@@ -14,6 +18,10 @@ type Bundler = {
 };
 
 const bundler: Bundler[] = [
+  {
+    name: "node",
+    runner: node,
+  },
   {
     name: "webpack",
     runner: webpack,
@@ -37,10 +45,10 @@ const bundler: Bundler[] = [
   return true;
 });
 
-async function runCase() {
-  const casesDir = path.join(__dirname, "../cases");
+type Result = Record<string, Record<string, string[]>>;
 
-  const result: Record<string, Record<string, string[]>> = {};
+async function runCase() {
+  const result: Result = {};
 
   for (const caseDir of await fs.readdir(casesDir)) {
     const casePath = path.join(casesDir, caseDir);
@@ -49,12 +57,24 @@ async function runCase() {
     }
 
     const entry = path.join(casePath, "index.js");
+    const filter = path.join(casePath, "case-ignore.js");
+    let filterFn = async (_id: string) => true;
+    const require = createRequire(import.meta.dirname);
+    try {
+      if (await fs.stat(filter).then((stat) => stat.isFile())) {
+        const getFilter = require(filter);
+        filterFn = async (id: string) => {
+          return await getFilter(id);
+        };
+      }
+    } catch {}
+
     for (const { name, runner } of bundler) {
       const { reportExecution, getCurrentExecutionOrder } = newRecord();
       let output = await runner(entry);
 
       if (!path.isAbsolute(output)) {
-        output = path.resolve(__dirname, output);
+        output = path.resolve(import.meta.dirname, output);
       }
 
       // @ts-expect-error
@@ -62,11 +82,17 @@ async function runCase() {
       // @ts-expect-error
       globalThis.blackBox = () => {};
 
-      require.cache[output] = undefined;
-      const exports = await require(output);
-      await exports.finish
+      const outDir = path.dirname(output);
+      for (const name of await fs.readdir(outDir)) {
+        const realPath = path.resolve(outDir, name);
+        require.cache[realPath] = undefined;
+      }
 
-      const order = getCurrentExecutionOrder();
+      const exports = await import(output + "?" + Date.now());
+      await exports.finish;
+
+      const order = getCurrentExecutionOrder().filter(filterFn);
+
       let bundlerResult = result[caseDir];
       if (!bundlerResult) {
         bundlerResult = result[caseDir] = {};
@@ -78,7 +104,17 @@ async function runCase() {
   return result;
 }
 
-runCase().then((result) => {
+runCase()
+  .then((result) => {
+    if (process.env.TABLE) {
+      renderTable(result);
+    } else {
+      console.log(result);
+    }
+  })
+  .catch(console.error);
+
+function renderTable(result: Result) {
   const bundlerNames = bundler.map((bundler) => bundler.name);
 
   const table = new Table({
@@ -101,4 +137,4 @@ runCase().then((result) => {
   });
 
   console.log(table.toString());
-});
+}

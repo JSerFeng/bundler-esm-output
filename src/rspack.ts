@@ -1,4 +1,4 @@
-import Compiler, { type Configuration } from "@rspack/core";
+import { type Configuration, rspack as Compiler } from "@rspack/core";
 import path from "path";
 
 export async function rspack(entry: string): Promise<string> {
@@ -7,6 +7,7 @@ export async function rspack(entry: string): Promise<string> {
       main: entry,
     },
     mode: "production",
+    context: path.resolve(import.meta.dirname, "../dist"),
     output: {
       library: {
         type: "modern-module",
@@ -14,6 +15,8 @@ export async function rspack(entry: string): Promise<string> {
       filename: "dist-rspack/[name].js",
       publicPath: "",
       chunkFormat: "module",
+      chunkLoading: "import",
+      clean: true,
     },
     devtool: false,
     module: {
@@ -22,7 +25,7 @@ export async function rspack(entry: string): Promise<string> {
           test: /js$/,
           use: [
             {
-              loader: path.resolve(__dirname, "./report-loader"),
+              loader: path.resolve(import.meta.dirname, "./report-loader"),
             },
           ],
         },
@@ -43,8 +46,7 @@ export async function rspack(entry: string): Promise<string> {
       if (err || stats!.hasErrors()) {
         reject(err || stats?.toJson().errors![0]);
       } else {
-        const entry = stats?.toJson().entrypoints!["main"];
-        resolve(entry?.assets![0].name as string);
+        resolve(path.resolve(import.meta.dirname, "../dist/dist-rspack/main.js"));
       }
     });
   });
