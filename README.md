@@ -12,33 +12,6 @@ The case name can be found at ./cases folder.
 
 ```json
 {
-  "cjs-hoisting": {
-    "node": [
-      "esm.js",
-      "cjs.cjs",
-      "index.js"
-    ],
-    "webpack": [
-      "esm.js",
-      "cjs.cjs",
-      "index.js"
-    ],
-    "rspack": [
-      "esm.js",
-      "cjs.cjs",
-      "index.js"
-    ],
-    "rollup": [
-      "esm.js",
-      "cjs.cjs",
-      "index.js"
-    ],
-    "esbuild": [
-      "esm.js",
-      "cjs.cjs",
-      "index.js"
-    ]
-  },
   "cjs-require-esm": {
     "node": [
       "module.cjs",
