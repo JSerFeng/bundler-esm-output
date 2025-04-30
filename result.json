@@ -175,7 +175,11 @@
       "entry-b.js"
     ],
     "rollup": [
-      "index.js"
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
     ],
     "rolldown": [
       "index.js",

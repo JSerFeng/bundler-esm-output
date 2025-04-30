@@ -6,7 +6,10 @@ import { readFile } from "fs/promises";
 
 export async function esbuild(entry: string) {
   const context = path.dirname(entry);
-  const outdir = path.resolve(import.meta.dirname, "../dist/dist-esbuild");
+  const outdir = path.resolve(
+    import.meta.dirname,
+    `../dist/dist-esbuild-${performance.now()}`
+  );
   await fs.unlink(outdir).catch(() => {});
 
   await build({

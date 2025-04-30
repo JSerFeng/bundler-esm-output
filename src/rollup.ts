@@ -6,6 +6,10 @@ import fs from "fs/promises";
 
 export async function rollup(entry: string) {
   const context = path.dirname(entry);
+  const outdir = path.resolve(
+    import.meta.dirname,
+    `../dist/dist-rollup-${performance.now()}`
+  );
 
   const config = defineConfig({
     input: {
@@ -13,6 +17,7 @@ export async function rollup(entry: string) {
     },
     output: {
       format: "esm",
+      dir: outdir,
     },
     plugins: [
       commonjs(),
@@ -31,7 +36,6 @@ export async function rollup(entry: string) {
   });
 
   const res = await build(config);
-  const outdir = path.resolve(import.meta.dirname, "../dist/dist-rollup");
   await fs.unlink(outdir).catch(() => {});
   await res.write({
     dir: outdir,

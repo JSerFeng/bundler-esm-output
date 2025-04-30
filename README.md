@@ -196,7 +196,11 @@ The case name can be found at ./cases folder.
       "entry-b.js"
     ],
     "rollup": [
-      "index.js"
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
     ],
     "rolldown": [
       "index.js",
@@ -205,7 +209,7 @@ The case name can be found at ./cases folder.
       "entry-a.js",
       "entry-b.js"
     ],
-    "rolldown(strict execution order)": [
+    "rolldown (strict execution order)": [
       "index.js",
       "cjs.cjs",
       "esm.js",

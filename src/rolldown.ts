@@ -7,7 +7,7 @@ export async function rolldown(entry: string, strictExecutionOrder = false) {
   const context = path.dirname(entry);
   const outdir = path.resolve(
     import.meta.dirname,
-    `../dist/dist-rolldown-${strictExecutionOrder}`
+    `../dist/dist-rolldown-${strictExecutionOrder}-${performance.now()}`
   );
   const config = defineConfig({
     input: {

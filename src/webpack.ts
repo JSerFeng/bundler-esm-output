@@ -2,6 +2,8 @@ import Compiler, { type Configuration } from "webpack";
 import path from "path";
 
 export async function webpack(entry: string): Promise<string> {
+  const timestamp = performance.now();
+
   const config: Configuration = {
     entry: {
       main: entry,
@@ -12,7 +14,7 @@ export async function webpack(entry: string): Promise<string> {
       library: {
         type: "modern-module",
       },
-      filename: "dist-webpack/[name].js",
+      filename: `dist-webpack-${timestamp}/[name].js`,
       iife: false,
       publicPath: "",
       chunkFormat: "module",
@@ -47,7 +49,7 @@ export async function webpack(entry: string): Promise<string> {
       if (err || stats!.hasErrors()) {
         reject(err || JSON.stringify(stats?.toJson().errors));
       } else {
-        resolve(path.resolve(import.meta.dirname, "../dist/dist-webpack/main.js"));
+        resolve(path.resolve(import.meta.dirname, `../dist/dist-webpack-${timestamp}/main.js`));
       }
     });
   });
