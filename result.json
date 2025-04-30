@@ -1,31 +1,4 @@
 {
-  "cjs-hoisting": {
-    "node": [
-      "esm.js",
-      "cjs.cjs",
-      "index.js"
-    ],
-    "webpack": [
-      "esm.js",
-      "cjs.cjs",
-      "index.js"
-    ],
-    "rspack": [
-      "esm.js",
-      "cjs.cjs",
-      "index.js"
-    ],
-    "rollup": [
-      "esm.js",
-      "cjs.cjs",
-      "index.js"
-    ],
-    "esbuild": [
-      "esm.js",
-      "cjs.cjs",
-      "index.js"
-    ]
-  },
   "cjs-require-esm": {
     "node": [
       "module.cjs",
@@ -53,6 +26,20 @@
       "lib-esm.js",
       "esm-after-cjs.js",
       "module.cjs",
+      "index.js"
+    ],
+    "rolldown": [
+      "lib-cjs.cjs",
+      "module.cjs",
+      "lib-esm.js",
+      "esm-after-cjs.js",
+      "index.js"
+    ],
+    "rolldown(strict execution order)": [
+      "lib-cjs.cjs",
+      "module.cjs",
+      "lib-esm.js",
+      "esm-after-cjs.js",
       "index.js"
     ],
     "esbuild": [
@@ -92,6 +79,20 @@
       "entry-a.js",
       "entry-b.js"
     ],
+    "rolldown": [
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
+    ],
+    "rolldown(strict execution order)": [
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
+    ],
     "esbuild": [
       "index.js",
       "esm.js",
@@ -101,6 +102,57 @@
     ]
   },
   "cjs-split-2": {
+    "node": [
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
+    ],
+    "webpack": [
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
+    ],
+    "rspack": [
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
+    ],
+    "rollup": [
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
+    ],
+    "rolldown": [
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
+    ],
+    "rolldown(strict execution order)": [
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
+    ],
+    "esbuild": [
+      "index.js",
+      "esm.js",
+      "cjs.cjs",
+      "entry-a.js",
+      "entry-b.js"
+    ]
+  },
+  "cjs-split-3": {
     "node": [
       "index.js",
       "esm.js",
@@ -123,6 +175,16 @@
       "entry-b.js"
     ],
     "rollup": [
+      "index.js"
+    ],
+    "rolldown": [
+      "index.js",
+      "esm.js",
+      "cjs.cjs",
+      "entry-a.js",
+      "entry-b.js"
+    ],
+    "rolldown(strict execution order)": [
       "index.js",
       "cjs.cjs",
       "esm.js",

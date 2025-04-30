@@ -1,1 +1,1 @@
-require('./esm-after-cjs.js')
+module.exports = require('./esm-after-cjs.js')

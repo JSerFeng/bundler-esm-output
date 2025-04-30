@@ -1,1 +1,2 @@
-import "./module.cjs";
+import v from "./module.cjs";
+blackBox(v);

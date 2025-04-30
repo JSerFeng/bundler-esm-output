@@ -10,6 +10,14 @@ The case name can be found at ./cases folder.
 
 ## Current result
 
+| Case | node | webpack | rspack | rollup | rolldown | rolldown(strict execution order) | esbuild |
+| ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+| cjs-require-esm | baseline | ✅ | ✅ | ❌ | ⚠️ | ⚠️ | ✅ |
+| cjs-split | baseline | ✅ | ✅ | ⚠️ | ⚠️ | ⚠️ | ✅ |
+| cjs-split-2 | baseline | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ |
+| cjs-split-3 | baseline | ✅ | ✅ | ⚠️ | ✅ | ⚠️ | ✅ |
+
+
 ```json
 {
   "cjs-require-esm": {
@@ -39,6 +47,20 @@ The case name can be found at ./cases folder.
       "lib-esm.js",
       "esm-after-cjs.js",
       "module.cjs",
+      "index.js"
+    ],
+    "rolldown": [
+      "lib-cjs.cjs",
+      "module.cjs",
+      "lib-esm.js",
+      "esm-after-cjs.js",
+      "index.js"
+    ],
+    "rolldown(strict execution order)": [
+      "lib-cjs.cjs",
+      "module.cjs",
+      "lib-esm.js",
+      "esm-after-cjs.js",
       "index.js"
     ],
     "esbuild": [
@@ -78,6 +100,20 @@ The case name can be found at ./cases folder.
       "entry-a.js",
       "entry-b.js"
     ],
+    "rolldown": [
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
+    ],
+    "rolldown(strict execution order)": [
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
+    ],
     "esbuild": [
       "index.js",
       "esm.js",
@@ -87,6 +123,57 @@ The case name can be found at ./cases folder.
     ]
   },
   "cjs-split-2": {
+    "node": [
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
+    ],
+    "webpack": [
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
+    ],
+    "rspack": [
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
+    ],
+    "rollup": [
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
+    ],
+    "rolldown": [
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
+    ],
+    "rolldown(strict execution order)": [
+      "index.js",
+      "cjs.cjs",
+      "esm.js",
+      "entry-a.js",
+      "entry-b.js"
+    ],
+    "esbuild": [
+      "index.js",
+      "esm.js",
+      "cjs.cjs",
+      "entry-a.js",
+      "entry-b.js"
+    ]
+  },
+  "cjs-split-3": {
     "node": [
       "index.js",
       "esm.js",
@@ -109,6 +196,16 @@ The case name can be found at ./cases folder.
       "entry-b.js"
     ],
     "rollup": [
+      "index.js"
+    ],
+    "rolldown": [
+      "index.js",
+      "esm.js",
+      "cjs.cjs",
+      "entry-a.js",
+      "entry-b.js"
+    ],
+    "rolldown(strict execution order)": [
       "index.js",
       "cjs.cjs",
       "esm.js",

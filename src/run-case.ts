@@ -9,6 +9,7 @@ import { rollup } from "./rollup.js";
 import { esbuild } from "./esbuild.js";
 import { node } from "./node.js";
 import { createRequire } from "module";
+import { rolldown } from "./rolldown.js";
 
 const casesDir = path.join(import.meta.dirname, "../cases");
 
@@ -35,6 +36,14 @@ const bundler: Bundler[] = [
     runner: rollup,
   },
   {
+    name: "rolldown",
+    runner: rolldown,
+  },
+  {
+    name: "rolldown(strict execution order)",
+    runner: (entry: string) => rolldown(entry, true),
+  },
+  {
     name: "esbuild",
     runner: esbuild,
   },
@@ -51,6 +60,9 @@ async function runCase() {
   const result: Result = {};
 
   for (const caseDir of await fs.readdir(casesDir)) {
+    if (process.env.CASE && caseDir !== process.env.CASE) {
+      continue;
+    }
     const casePath = path.join(casesDir, caseDir);
     if (!(await (await fs.stat(casePath)).isDirectory())) {
       continue;
@@ -130,16 +142,94 @@ function renderTable(result: Result) {
     },
   });
 
+  let markdownTable = `| Case | ${bundlerNames.join(" | ")} |\n`;
+  markdownTable += `| ---- | ${bundlerNames.map(() => "----").join(" | ")} |\n`;
   Object.entries(result).forEach(([caseDir, bundlerResults]) => {
     const row = [caseDir];
+    let mdRow = `| ${caseDir} `;
+    // Get node execution order as baseline
+    const nodeOrder = bundlerResults["node"] || [];
 
     bundlerNames.forEach((bundlerName) => {
-      const executionOrder = bundlerResults[bundlerName];
-      row.push(executionOrder.join(" "));
+      const executionOrder = bundlerResults[bundlerName] || [];
+
+      // If it's node, just show a placeholder
+      if (bundlerName === "node") {
+        row.push("baseline");
+        mdRow += "| baseline ";
+        return;
+      }
+
+      // Calculate the difference with node results
+      const isSame = arraysEqual(executionOrder, nodeOrder);
+      const similarity = calculateSimilarity(executionOrder, nodeOrder);
+
+      // Add color based on similarity without showing actual content
+      let coloredText;
+      let mdSymbol;
+      if (isSame) {
+        // Completely consistent - green
+        coloredText = `\x1b[32m✓\x1b[0m`;
+        mdSymbol = "✅";
+      } else if (similarity >= 0.7) {
+        // High similarity - yellow
+        coloredText = `\x1b[33m△\x1b[0m`;
+        mdSymbol = "⚠️";
+      } else {
+        // Low similarity - red
+        coloredText = `\x1b[31m✗\x1b[0m`;
+        mdSymbol = "❌";
+      }
+
+      row.push(coloredText);
+      mdRow += `| ${mdSymbol} `;
     });
 
     table.push(row);
+    markdownTable += `${mdRow}|\n`;
   });
 
   console.log(table.toString());
+
+
+  fs.writeFile(path.resolve(import.meta.dirname, "../table.md"), markdownTable);
+}
+
+// 判断两个数组是否完全相等
+function arraysEqual(a: string[], b: string[]): boolean {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
+// 计算两个数组的相似度 (0-1)
+function calculateSimilarity(a: string[], b: string[]): number {
+  if (a.length === 0 && b.length === 0) return 1;
+  if (a.length === 0 || b.length === 0) return 0;
+
+  // 计算顺序相同的元素数量
+  let sameOrder = 0;
+  const minLength = Math.min(a.length, b.length);
+
+  for (let i = 0; i < minLength; i++) {
+    if (a[i] === b[i]) sameOrder++;
+  }
+
+  // 计算包含相同元素的数量
+  const setA = new Set(a);
+  const setB = new Set(b);
+  let sameElements = 0;
+
+  for (const item of setA) {
+    if (setB.has(item)) sameElements++;
+  }
+
+  // 综合考虑顺序和元素的相似度
+  const orderSimilarity = sameOrder / minLength;
+  const elementSimilarity = sameElements / Math.max(setA.size, setB.size);
+
+  // 顺序权重更高
+  return orderSimilarity * 0.7 + elementSimilarity * 0.3;
 }
