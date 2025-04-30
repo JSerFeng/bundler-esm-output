@@ -1,0 +1,1 @@
+require('./esm-after-cjs.js')

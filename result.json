@@ -26,6 +26,43 @@
       "index.js"
     ]
   },
+  "cjs-require-esm": {
+    "node": [
+      "module.cjs",
+      "lib-cjs.cjs",
+      "lib-esm.js",
+      "esm-after-cjs.js",
+      "index.js"
+    ],
+    "webpack": [
+      "module.cjs",
+      "lib-cjs.cjs",
+      "lib-esm.js",
+      "esm-after-cjs.js",
+      "index.js"
+    ],
+    "rspack": [
+      "module.cjs",
+      "lib-cjs.cjs",
+      "lib-esm.js",
+      "esm-after-cjs.js",
+      "index.js"
+    ],
+    "rollup": [
+      "lib-cjs.cjs",
+      "lib-esm.js",
+      "esm-after-cjs.js",
+      "module.cjs",
+      "index.js"
+    ],
+    "esbuild": [
+      "module.cjs",
+      "lib-cjs.cjs",
+      "lib-esm.js",
+      "esm-after-cjs.js",
+      "index.js"
+    ]
+  },
   "cjs-split": {
     "node": [
       "index.js",
