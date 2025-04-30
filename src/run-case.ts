@@ -105,12 +105,17 @@ async function runCase() {
 }
 
 runCase()
-  .then((result) => {
+  .then(async (result) => {
     if (process.env.TABLE) {
       renderTable(result);
-    } else {
-      console.log(result);
     }
+    if (process.env.JSON) {
+      await fs.writeFile(
+        path.resolve(import.meta.dirname, "../result.json"),
+        JSON.stringify(result, null, 2)
+      );
+    }
+    console.log(result);
   })
   .catch(console.error);
 
